@@ -3,7 +3,7 @@
 using IAmHungry.Application;
 using IAmHungry.Domain;
 
-namespace Test
+namespace IAmHungry.ApplicationTest
 
 {
     public class Program
