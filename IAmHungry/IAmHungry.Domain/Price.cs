@@ -3,7 +3,7 @@
     public class Price
     {
         private string _currency;
-        private double _amount;
+        private int? _amount;
         public string Currency
         {
             get
@@ -17,7 +17,7 @@
             }
         }
 
-        public double Amount
+        public int? Amount
         {
             get
             {
@@ -30,7 +30,7 @@
         }
 
 
-        public Price(double amount, string currency = "czk")
+        public Price(int amount, string currency = "czk")
         {
             _currency = currency;
             _amount = amount;

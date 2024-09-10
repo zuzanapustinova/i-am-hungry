@@ -10,16 +10,16 @@
                 return _nameContains;
             }
         }
-        public string Name { get; set; }
-        public Meal(string name, string filter = "")
+        public string Description { get; set; }
+        public Meal(string description, string filter = "")
         {
-            Name = name;
-            _nameContains = IsContainedInName(name, filter);
+            Description = description;
+            _nameContains = IsContainedInName(Description, filter);
         }
 
-        private bool IsContainedInName(string name, string substring)
+        private bool IsContainedInName(string description, string substring)
         {
-            return name.ToLower().Contains(substring.ToLower()) ? true : false;
+            return description.ToLower().Contains(substring.ToLower()) ? true : false;
         }
     }
 }

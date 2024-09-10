@@ -8,12 +8,9 @@
         public string Id { get; set; }
         
 
-        public Restaurant(string id, string name, string address)
+        public Restaurant(string id)
         {
             Id = id;
-            Name = name;
-            Address = address;
         }
-
     }
 }

@@ -2,25 +2,28 @@
 {
     public class Menu
     {
-        private int _id;
-        private List<MenuItem> _items;
-        public int ID
-        {
+        private List<MenuItem>? _items;
+        
+        public List<MenuItem> Items 
+        { 
             get
             {
-                return _id;
+                return _items ?? (_items = new List<MenuItem>());
             }
-        }
-        public List<MenuItem> Items
-        {
-            get
+            set
             {
-                return _items;
+                _items = value;
             }
         }
+        public int Count { get { return Items.Count; } }
 
         public Menu()
         {
         }
+
+        public void Add(MenuItem item)
+        {
+            Items.Add(item);
+        }       
     }
 }

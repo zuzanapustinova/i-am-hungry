@@ -45,9 +45,9 @@ namespace IAmHungry.Application
             return restaurantInfo;
         }
 
-        public List<string> GetRestaurantInfo(string restaurantId)
+        public Restaurant GetRestaurantInfo(string restaurantId)
         {
-            var restaurantInfo = new List<string>();
+            var restaurant = new Restaurant(restaurantId);
             var nodeName = GetRestaurantInfoNode(restaurantId, "/h3");
             var nodeAddress = GetRestaurantInfoNode(restaurantId, "/p[@class='restadresa']");
 
@@ -57,14 +57,14 @@ namespace IAmHungry.Application
 
             if ((restaurantName != null) && (restaurantAddress != null)) 
             {
-                restaurantInfo.Add(restaurantName);
-                restaurantInfo.Add(restaurantAddress);
+                restaurant.Name = restaurantName;
+                restaurant.Address = restaurantAddress;
             }
             else
             {
                 throw new ArgumentException("No restaurant name or address to display.");
             }
-            return restaurantInfo;
+            return restaurant;
         }
 
         private string GetMenuItemNode(string restaurantId, int trIndex, int tdIndex)
@@ -85,32 +85,47 @@ namespace IAmHungry.Application
             return count;
         }
 
-        private List<string> GetMenuItem(string restaurantId, int index)
+        public MenuItem GetMenuItem(string restaurantId, int index)
         {
             var itemDescription = _parser.FindSingleNode(LoadedWebContent, GetMenuItemNode(restaurantId, index, 2));
-            var itemPrice = _parser.FindSingleNode(LoadedWebContent, GetMenuItemNode(restaurantId, index, 3));
-            var menuItem = new List<string>();
+            string itemPrice = _parser.FindSingleNode(LoadedWebContent, GetMenuItemNode(restaurantId, index, 3));
+
+            var meal = new Meal("");
+            
             if (itemDescription == GetMenuItemNode(restaurantId, index, 2))
             {
-                menuItem.Add("Restaurace nedodala aktuální údaje.");
-                return menuItem;
+                meal.Description = "Restaurace nedodala aktuální údaje.";
+                var actualMenuItem = new MenuItem(meal);
+                return actualMenuItem;
             }
-            menuItem.Add(itemDescription);
-            menuItem.Add(itemPrice.Replace("&nbsp;", " ")); //zbavení se pevné mezery, později rozdělit na částku a měnu
-            return menuItem;
+            else
+            {
+                meal.Description = itemDescription;
+                if (itemPrice != "")
+                {
+                    int itemAmount = int.Parse(itemPrice.Split("&nbsp;")[0]);
+                    var actualItemPrice = new Price(itemAmount);
+                    var actualMenuItem = new MenuItem(meal, actualItemPrice);
+                    return actualMenuItem;
+                }
+                else
+                {
+                    var actualMenuItem = new MenuItem(meal);
+                    return actualMenuItem;
+                }
+            }   
         } 
 
-        public List<List<string>> GetMenuItems(string restaurantId)
+        public Menu GetMenu(string restaurantId)
         {
-            var menuItems = new List<List<string>>();
+            var menu = new Menu();
             var counter = GetItemsListCount(restaurantId);
-            
             for (int i = 1; i <= counter; i++)
             {
                 var item = GetMenuItem(restaurantId, i);
-                menuItems.Add(item);
+                menu.Add(item);
             }
-            return menuItems;
-        }
+            return menu;
+        }       
     }
 }

@@ -10,25 +10,32 @@ namespace IAmHungry.ApplicationTest
     {
         static void Main(string[] args)
         {
-            var price = new Price(157, "eur");
-
-            var meal = new Meal("vegetarian: Smažený květák", "tofu");
-            /*
-            if (meal.NameContains)
-            {
-                Console.WriteLine(meal.Name);
-            }
-            else
-            {
-                Console.WriteLine("no such meal");
-            }*/
-
-            var menuItem = new MenuItem(meal, price);
-            //Console.WriteLine(menuItem.MealDescription.Name.ToString() + " " + menuItem.MealPrice.ToString());
-
+            // test funkcionality PoledniMenuHandler
             var parser = new WebPageParser();
+            var poledniMenu = new PoledniMenuHandler(parser);
+            var restaurantsIds = poledniMenu.GetRestaurantIds();
+            foreach (string id in restaurantsIds)
+            {
+                //vytiskne do konzole název restaurace a adresu, položky menu a cenu, pokud je k dispozici
+                var restaurantInfo = poledniMenu.GetRestaurantInfo(id);
+                Console.WriteLine(restaurantInfo.Name);
+                Console.WriteLine(restaurantInfo.Address);
 
-            /*
+                var todaysMenu = poledniMenu.GetMenu(id);
+                var numberOfItems = todaysMenu.Count;
+                for (int i = 0; i < numberOfItems; i++)
+                {
+                    Console.WriteLine(todaysMenu.Items[i].MealDescription.Description);
+                    if (todaysMenu.Items[i].MealPrice != null)
+                    {
+                        Console.WriteLine(todaysMenu.Items[i].MealPrice.ToString());
+                    }
+                }
+                Console.WriteLine();
+            }
+
+            /* test Parseru (vyhledávání konkrétních položek pomocí xpath)
+            
             try
             {
                 var page = parser.LoadPage("https://www.olomouc.cz/poledni-menu/");
@@ -39,13 +46,9 @@ namespace IAmHungry.ApplicationTest
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-            }*/
+            }
 
-            var menu = new PoledniMenuHandler(parser);
-           
-
-            /*
-            try 
+            try
             {
                 var page = parser.LoadPage("https://www.olomouc.cz/poledni-menu/");
                 var restaurantIds = page.DocumentNode.SelectNodes("//div[contains(concat(' ', normalize-space(@id), ' '), 'restMenu')]");
@@ -53,70 +56,11 @@ namespace IAmHungry.ApplicationTest
                 {
                     Console.WriteLine(id.Id);
                 }
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }*/
-
-            /*
-            try
-            {
-                var restaurantsIds = menu.GetRestaurantIds();
-                foreach (string id in restaurantsIds)
-                {
-                    Console.WriteLine(id);
-                    var menuItems = menu.GetMenuItems(id);
-                    foreach (var item in menuItems)
-                    {
-                        Console.WriteLine(item);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-
-            }*/
-
-            /*
-            try
-            {    
-                var restaurantsIds = menu.GetRestaurantIds();
-                foreach (string id in restaurantsIds)
-                {
-                    Console.WriteLine(id);
-                    var restaurantInfo = menu.GetRestaurantInfo(id);
-                    foreach (var item in restaurantInfo)
-                    {
-                        Console.WriteLine(item);
-                    }
-                    Console.WriteLine();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-
-            }*/
-
-            
-            var restaurantsIds = menu.GetRestaurantIds();
-            foreach (string id in restaurantsIds)
-            {
-                Console.WriteLine(id);
-                var menus = menu.GetMenuItems(id);
-                foreach(var item in menus)
-                {
-                   
-                    foreach (var food in item)
-                    {
-                        Console.WriteLine(food);
-                    }   
-                }
-                Console.WriteLine();
-            }
         }
     }
 }
