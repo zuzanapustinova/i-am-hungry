@@ -1,7 +1,9 @@
 ﻿//Pouze pro potřeby testování. Tisk výstupů do konzole. 
 
 using IAmHungry.Application;
+using IAmHungry.Application.Abstractions;
 using IAmHungry.Domain;
+using System.Net.WebSockets;
 
 namespace IAmHungry.ApplicationTest
 
@@ -10,29 +12,64 @@ namespace IAmHungry.ApplicationTest
     {
         static void Main(string[] args)
         {
-            // test funkcionality PoledniMenuHandler
-            var parser = new WebPageParser();
-            var poledniMenu = new PoledniMenuHandler(parser);
-            var restaurantsIds = poledniMenu.GetRestaurantIds();
-            foreach (string id in restaurantsIds)
+            //test funkcionality IPoledniMenuHandler a výstupní fce
+            IWebPageParser parser = new WebPageParser();
+            IMenuHandler poledniMenu = new PoledniMenuHandler(parser);
+            var restaurants = poledniMenu.GetRestaurants();
+            
+            foreach (var restaurant in restaurants)
             {
-                //vytiskne do konzole název restaurace a adresu, položky menu a cenu, pokud je k dispozici
-                var restaurantInfo = poledniMenu.GetRestaurantInfo(id);
-                Console.WriteLine(restaurantInfo.Name);
-                Console.WriteLine(restaurantInfo.Address);
+                Console.WriteLine(restaurant.Name);
+                Console.WriteLine(restaurant.Address);
+                Console.WriteLine();
 
-                var todaysMenu = poledniMenu.GetMenu(id);
-                var numberOfItems = todaysMenu.Count;
-                for (int i = 0; i < numberOfItems; i++)
+                foreach (var item in restaurant.DailyMenu.Items)
                 {
-                    Console.WriteLine(todaysMenu.Items[i].MealDescription.Description);
-                    if (todaysMenu.Items[i].MealPrice != null)
+                    Console.WriteLine(item.MealDescription.Description);
+                    if (item.MealPrice != null)
                     {
-                        Console.WriteLine(todaysMenu.Items[i].MealPrice.ToString());
+                        Console.WriteLine(item.MealPrice.ToString());
                     }
                 }
                 Console.WriteLine();
+                Console.WriteLine();
             }
+            
+
+            /* test funkcionality PoledniMenuHandler
+            IWebPageParser parser = new WebPageParser();
+        var poledniMenu = new PoledniMenuHandler(parser);
+        var restaurantsIds = poledniMenu.GetRestaurantIds();
+        foreach (string id in restaurantsIds)
+        {
+            //vytiskne do konzole název restaurace a adresu, položky menu a cenu, pokud je k dispozici
+            var restaurantInfo = poledniMenu.GetRestaurantInfo(id);
+            Console.WriteLine(restaurantInfo.Name);
+            Console.WriteLine(restaurantInfo.Address);
+
+            var todaysMenu = poledniMenu.GetMenu(id);
+
+            foreach(var item in  todaysMenu.Items)
+            {
+                Console.WriteLine(item.MealDescription.Description);
+                if (item.MealPrice != null)
+                {
+                    Console.WriteLine(item.MealPrice.ToString());
+                }
+
+            }*/
+
+            /*
+           for (int i = 0; i < todaysMenu.Count; i++)
+           {
+               Console.WriteLine(todaysMenu.Items[i].MealDescription.Description);
+               if (todaysMenu.Items[i].MealPrice != null)
+               {
+                   Console.WriteLine(todaysMenu.Items[i].MealPrice.ToString());
+               }
+           }
+           Console.WriteLine();
+       }*/
 
             /* test Parseru (vyhledávání konkrétních položek pomocí xpath)
             

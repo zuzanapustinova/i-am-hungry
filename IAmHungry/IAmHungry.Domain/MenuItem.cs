@@ -1,4 +1,5 @@
-﻿namespace IAmHungry.Domain
+﻿
+namespace IAmHungry.Domain
 {
     public class MenuItem
     {

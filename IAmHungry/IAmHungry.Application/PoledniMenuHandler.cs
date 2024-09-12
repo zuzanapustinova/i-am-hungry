@@ -1,11 +1,12 @@
-﻿using IAmHungry.Domain;
+﻿using IAmHungry.Application.Abstractions;
+using IAmHungry.Domain;
 using System;
 
 namespace IAmHungry.Application
 {
-    public class PoledniMenuHandler
+    public class PoledniMenuHandler : IMenuHandler
     {
-        private WebPageParser _parser;
+        private IWebPageParser _parser;
         private string _poledniMenuUrl;
         private HtmlAgilityPack.HtmlDocument LoadedWebContent { get; set; }
         
@@ -21,7 +22,7 @@ namespace IAmHungry.Application
             }
         }
 
-        public PoledniMenuHandler(WebPageParser parser, string url = "https://www.olomouc.cz/poledni-menu/")
+        public PoledniMenuHandler(IWebPageParser parser, string url = "https://www.olomouc.cz/poledni-menu/")
         {
             _parser = parser;
             _poledniMenuUrl = url;
@@ -39,13 +40,13 @@ namespace IAmHungry.Application
             return ids;
         }
 
-        private string GetRestaurantInfoNode(string restaurantId, string infoPart)
+        public string GetRestaurantInfoNode(string restaurantId, string infoPart)
         {
             string restaurantInfo = $"//div[@id='{restaurantId}']//div[@class='nazev-restaurace']/{infoPart}";
             return restaurantInfo;
         }
 
-        public Restaurant GetRestaurantInfo(string restaurantId)
+        public Restaurant GetRestaurant(string restaurantId)
         {
             var restaurant = new Restaurant(restaurantId);
             var nodeName = GetRestaurantInfoNode(restaurantId, "/h3");
@@ -67,7 +68,7 @@ namespace IAmHungry.Application
             return restaurant;
         }
 
-        private string GetMenuItemNode(string restaurantId, int trIndex, int tdIndex)
+        public string GetMenuItemNode(string restaurantId, int trIndex, int tdIndex)
         {
             string menuItemsNode = $"//div[@id='{restaurantId}']//table//tr[{trIndex}]/td[{tdIndex}]";
             return menuItemsNode;
@@ -126,6 +127,20 @@ namespace IAmHungry.Application
                 menu.Add(item);
             }
             return menu;
-        }       
+        }
+
+        public List<Restaurant> GetRestaurants()
+        {
+            var restaurants = new List<Restaurant>();
+            var restaurantsIds = GetRestaurantIds();
+            foreach (string id in restaurantsIds)
+            {
+                var restaurant = GetRestaurant(id);
+                restaurants.Add(restaurant);
+                var todaysMenu = GetMenu(id);
+                restaurant.AddMenu(todaysMenu);
+            }
+            return restaurants;
+        }
     }
 }

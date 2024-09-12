@@ -1,6 +1,6 @@
 ﻿namespace IAmHungry.Domain
 {
-    public class Menu
+    public class Menu 
     {
         private List<MenuItem>? _items;
         

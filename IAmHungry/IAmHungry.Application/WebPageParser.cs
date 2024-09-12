@@ -1,9 +1,10 @@
 ﻿using HtmlAgilityPack;
+using IAmHungry.Application.Abstractions;
 using System.Text;
 
 namespace IAmHungry.Application
 {
-    public class WebPageParser
+    public class WebPageParser : IWebPageParser
     {
         public WebPageParser()
         {
