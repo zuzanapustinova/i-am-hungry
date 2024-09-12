@@ -2,19 +2,10 @@
 {
     public class Meal
     {
-        private bool _nameContains;
-        public bool NameContains
-        {
-            get
-            {
-                return _nameContains;
-            }
-        }
         public string Description { get; set; }
-        public Meal(string description, string filter = "")
+        public Meal(string description)
         {
             Description = description;
-            _nameContains = IsContainedInName(Description, filter);
         }
 
         private bool IsContainedInName(string description, string substring)

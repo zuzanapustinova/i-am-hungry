@@ -20,10 +20,6 @@
         public Menu()
         {
         }
-
-        public void Add(MenuItem item)
-        {
-            Items.Add(item);
-        }       
+     
     }
 }

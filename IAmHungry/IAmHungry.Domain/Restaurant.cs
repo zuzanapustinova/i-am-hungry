@@ -18,14 +18,11 @@
             }
         }
 
-        public Restaurant(string id)
+        public Restaurant(string id, string name, string address)
         {
             Id = id;
-        }
-
-        public void AddMenu(Menu menu)
-        {
-            DailyMenu = menu;
-        }
+            Name = name;
+            Address = address;
+        }      
     }
 }

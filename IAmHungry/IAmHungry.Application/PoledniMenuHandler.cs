@@ -1,6 +1,7 @@
 ﻿using IAmHungry.Application.Abstractions;
 using IAmHungry.Domain;
 using System;
+using System.Reflection.Metadata.Ecma335;
 
 namespace IAmHungry.Application
 {
@@ -48,24 +49,20 @@ namespace IAmHungry.Application
 
         public Restaurant GetRestaurant(string restaurantId)
         {
-            var restaurant = new Restaurant(restaurantId);
             var nodeName = GetRestaurantInfoNode(restaurantId, "/h3");
             var nodeAddress = GetRestaurantInfoNode(restaurantId, "/p[@class='restadresa']");
 
             var restaurantName = _parser.FindSingleNode(LoadedWebContent, nodeName);
             var restaurantAddress = _parser.FindSingleNode(LoadedWebContent, nodeAddress);
 
-
             if ((restaurantName != null) && (restaurantAddress != null)) 
             {
-                restaurant.Name = restaurantName;
-                restaurant.Address = restaurantAddress;
+                return new Restaurant(restaurantId, restaurantName, restaurantAddress);
             }
             else
             {
-                throw new ArgumentException("No restaurant name or address to display.");
+                return new Restaurant(restaurantId, "Jméno restaurace neuvedeno", "Adresa restaurace neuvedena");
             }
-            return restaurant;
         }
 
         public string GetMenuItemNode(string restaurantId, int trIndex, int tdIndex)
@@ -76,43 +73,31 @@ namespace IAmHungry.Application
 
         private int GetItemsListCount(string restaurantId)
         {
-            int count = 0;
             var itemsList = _parser.FindNodes(LoadedWebContent, $"//div[@id='{restaurantId}']//table/tr");
-            if (itemsList != null)
-            {
-                count = itemsList.Count;
-            }
-            
-            return count;
+            return (itemsList != null) ? itemsList.Count : 0;
         }
 
         public MenuItem GetMenuItem(string restaurantId, int index)
         {
             var itemDescription = _parser.FindSingleNode(LoadedWebContent, GetMenuItemNode(restaurantId, index, 2));
             string itemPrice = _parser.FindSingleNode(LoadedWebContent, GetMenuItemNode(restaurantId, index, 3));
-
-            var meal = new Meal("");
-            
             if (itemDescription == GetMenuItemNode(restaurantId, index, 2))
             {
-                meal.Description = "Restaurace nedodala aktuální údaje.";
-                var actualMenuItem = new MenuItem(meal);
-                return actualMenuItem;
+                var meal = new Meal("Restaurace nedodala aktuální údaje.");
+                return new MenuItem(meal);
             }
             else
             {
-                meal.Description = itemDescription;
+                var meal = new Meal(itemDescription);
                 if (itemPrice != "")
                 {
                     int itemAmount = int.Parse(itemPrice.Split("&nbsp;")[0]);
                     var actualItemPrice = new Price(itemAmount);
-                    var actualMenuItem = new MenuItem(meal, actualItemPrice);
-                    return actualMenuItem;
+                    return new MenuItem(meal, actualItemPrice);
                 }
                 else
                 {
-                    var actualMenuItem = new MenuItem(meal);
-                    return actualMenuItem;
+                    return new MenuItem(meal);
                 }
             }   
         } 
@@ -124,7 +109,7 @@ namespace IAmHungry.Application
             for (int i = 1; i <= counter; i++)
             {
                 var item = GetMenuItem(restaurantId, i);
-                menu.Add(item);
+                menu.Items.Add(item);
             }
             return menu;
         }
@@ -138,7 +123,7 @@ namespace IAmHungry.Application
                 var restaurant = GetRestaurant(id);
                 restaurants.Add(restaurant);
                 var todaysMenu = GetMenu(id);
-                restaurant.AddMenu(todaysMenu);
+                restaurant.DailyMenu = todaysMenu;
             }
             return restaurants;
         }
