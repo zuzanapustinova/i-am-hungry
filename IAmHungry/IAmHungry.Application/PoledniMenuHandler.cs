@@ -1,7 +1,5 @@
 ﻿using IAmHungry.Application.Abstractions;
 using IAmHungry.Domain;
-using System;
-using System.Reflection.Metadata.Ecma335;
 
 namespace IAmHungry.Application
 {

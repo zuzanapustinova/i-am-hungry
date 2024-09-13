@@ -1,3 +1,5 @@
+using IAmHungry.Application.Abstractions;
+using IAmHungry.Application;
 using System;
 using System.Reflection;
 
@@ -36,6 +38,16 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast")
+.WithOpenApi();
+
+app.MapGet("/restaurants", () =>
+{
+    IWebPageParser parser = new WebPageParser();
+    IMenuHandler poledniMenu = new PoledniMenuHandler(parser);
+    var restaurants = poledniMenu.GetRestaurants();
+    return restaurants;
+})
+.WithName("IAmHungry")
 .WithOpenApi();
 
 app.Run();

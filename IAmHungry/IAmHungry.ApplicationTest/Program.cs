@@ -12,7 +12,7 @@ namespace IAmHungry.ApplicationTest
     {
         static void Main(string[] args)
         {
-            //test funkcionality IPoledniMenuHandler a výstupní fce
+            //test funkcionality IPoledniMenuHandler a výstupní fce s použítím vege filtru
             IWebPageParser parser = new WebPageParser();
             IMenuHandler poledniMenu = new PoledniMenuHandler(parser);
             var restaurants = poledniMenu.GetRestaurants();
@@ -25,11 +25,15 @@ namespace IAmHungry.ApplicationTest
 
                 foreach (var item in restaurant.DailyMenu.Items)
                 {
-                    Console.WriteLine(item.MealDescription.Description);
-                    if (item.MealPrice != null)
+                    IMealsFilter filter = new MealsFilter(item.MealDescription);
+                    if (filter.IsVegetarian())
                     {
-                        Console.WriteLine(item.MealPrice.ToString());
-                    }
+                        Console.WriteLine(item.MealDescription.Description);
+                        if (item.MealPrice != null)
+                        {
+                            Console.WriteLine(item.MealPrice.ToString());
+                        }
+                    }                   
                 }
                 Console.WriteLine();
                 Console.WriteLine();

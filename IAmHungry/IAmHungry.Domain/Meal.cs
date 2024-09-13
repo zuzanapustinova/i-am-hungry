@@ -7,10 +7,5 @@
         {
             Description = description;
         }
-
-        private bool IsContainedInName(string description, string substring)
-        {
-            return description.ToLower().Contains(substring.ToLower()) ? true : false;
-        }
     }
 }
