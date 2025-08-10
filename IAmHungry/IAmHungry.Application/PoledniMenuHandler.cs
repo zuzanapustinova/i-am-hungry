@@ -76,21 +76,21 @@ namespace IAmHungry.Application
             var itemPrice = _parser.GetSingleNodeInnerText(LoadedWebContent, GetMenuItemNode(restaurantId, index, 3));
             if (itemDescription == GetMenuItemNode(restaurantId, index, 2))
             {
-                var meal = new Meal("Restaurace nedodala aktuální údaje.");
+                var meal = new Meal("Restaurace nedodala aktuální údaje.", false, false);
                 return new MenuItem(meal);
             }
             else
             {
-                var meal = new Meal(itemDescription);
+                var mealData = new MealData(itemDescription).GetMeal();
                 if (itemPrice != "")
                 {
                     var itemAmount = int.Parse(itemPrice.Split("&nbsp;")[0]);
                     var actualItemPrice = new Price(itemAmount);
-                    return new MenuItem(meal, actualItemPrice);
+                    return new MenuItem(mealData, actualItemPrice);
                 }
                 else
                 {
-                    return new MenuItem(meal);
+                    return new MenuItem(mealData);
                 }
             }   
         } 

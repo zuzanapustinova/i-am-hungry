@@ -10,7 +10,7 @@ public class RestaurantService
         IWebPageParser parser = new WebPageParser();
         IPoledniMenuHandler poledniMenu = new PoledniMenuHandler(parser, "https://www.olomouc.cz/poledni-menu/");
         IRestaurantMenu rozmaryny = new RozmarynyHandler(parser, "https://rozmaryny.cz");
-        //ohandlovat chybu, pokud adresa neexistuje
+        //handle error if url does not exist 
         restaurants.Add(rozmaryny.GetRestaurant());
         restaurants.AddRange(poledniMenu.GetRestaurants());
 

@@ -3,42 +3,43 @@ using IAmHungry.Domain;
 
 namespace IAmHungry.Application
 {
-    public class MealsFilter : IMealsFilter
+    public class MealData : IMealData
     {
-        private Meal _meal;
-        public Meal Meal
+        private string _descpription;
+        
+        public MealData(string mealDescription) 
         {
-            get { return _meal; }
-            set { _meal = value; }
-        }
-        public MealsFilter(Meal meal) 
-        {
-            _meal = meal;
+            _descpription = mealDescription;
         }
 
         private bool IsContainedInDescription(string substring)
         {
-            return Meal.Description.ToLower().Contains(substring.ToLower());
+            return _descpription.ToLower().Contains(substring.ToLower());
         }
 
-        public bool IsSoup()
+        private bool IsSoup()
         {
             return IsContainedInDescription(MealKind.Soup());
         }
 
-        public bool IsVegetarian()
+        private bool IsVegetarian()
         {
             if (MealKind.Vege().Any(vege => IsContainedInDescription(vege)))
             {
                 return true;
             }
             var meatList = MealKind.Meat().Concat(MealKind.Fish());
-            return meatList.All(meat => !IsContainedInDescription(meat));
+            return meatList.All(meat => !IsContainedInDescription(meat)) && !IsEmpty();
         }
 
-        public bool IsEmpty()
+        private bool IsEmpty()
         {
             return MealKind.NoDataAvailable().Any(line => IsContainedInDescription(line));
+        }
+
+        public Meal GetMeal()
+        {
+            return new Meal(_descpription, IsVegetarian(), IsSoup());
         }
     }
 }

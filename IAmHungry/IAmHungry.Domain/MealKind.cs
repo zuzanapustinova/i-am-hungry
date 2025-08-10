@@ -21,7 +21,7 @@ namespace IAmHungry.Domain
                 "jelítk",
                 "jitrnic",
                 "kačen",
-                "kachní",
+                "kachn",
                 "kančí",
                 "klobás",
                 "klokaní",
@@ -78,6 +78,7 @@ namespace IAmHungry.Domain
         {
             return new List<string>
             {
+                "vegan",
                 "vege",
                 "tempeh",
                 "sójov",
@@ -85,9 +86,9 @@ namespace IAmHungry.Domain
             };
         }
 
-        public static string Soup()
+        public static List<string> Soup()
         {
-            return "polévk";
+            return new List<string> { "polévk" , "vývar", "kyselic"};
         }
 
         public static List<string> NoDataAvailable()

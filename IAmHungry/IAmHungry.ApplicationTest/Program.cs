@@ -12,41 +12,43 @@ namespace IAmHungry.ApplicationTest
     {
         static void Main(string[] args)
         {
-            var restaurants = new RestaurantService();
-            var restaurantsWithMenu = new List<Restaurant>();
+            var parser = new WebPageParser();
 
-            //restaurace, které mají menu
-            foreach (var rest in restaurants.GetRestaurantList())
-            {
-                foreach (var item in rest.DailyMenu.Items)
-                {
-                    IMealsFilter filter = new MealsFilter(item.MealDescription);
-                    if (filter.IsEmpty()) continue;
-                    restaurantsWithMenu.Add(rest);
-                    break;
-                }
-            }
+            //var restaurants = new RestaurantService();
+            //var restaurantsWithMenu = new List<Restaurant>();
 
-            //výpis těch, které mají vege menu
-            foreach (var restaurant in restaurantsWithMenu)
-            {
-                Console.WriteLine(restaurant.Name);
-                Console.WriteLine(restaurant.Address);
-                Console.WriteLine();
+            ////restaurace, které mají menu
+            //foreach (var rest in restaurants.GetRestaurantList())
+            //{
+            //    foreach (var item in rest.DailyMenu.Items)
+            //    {
+            //        IMealData filter = new MealData(item.MealDescription);
+            //        if (filter.IsEmpty()) continue;
+            //        restaurantsWithMenu.Add(rest);
+            //        break;
+            //    }
+            //}
 
-                foreach (var item in restaurant.DailyMenu.Items)
-                {
-                    IMealsFilter filter = new MealsFilter(item.MealDescription);
-                    if (!filter.IsVegetarian()) continue;
-                    Console.WriteLine(item.MealDescription.Description);
-                    if (item.MealPrice != null)
-                    {
-                        Console.WriteLine(item.MealPrice.ToString());
-                    }
-                }
-                Console.WriteLine();
-                Console.WriteLine();
-            }
+            ////výpis těch, které mají vege menu
+            //foreach (var restaurant in restaurantsWithMenu)
+            //{
+            //    Console.WriteLine(restaurant.Name);
+            //    Console.WriteLine(restaurant.Address);
+            //    Console.WriteLine();
+
+            //    foreach (var item in restaurant.DailyMenu.Items)
+            //    {
+            //        IMealData filter = new MealData(item.MealDescription);
+            //        if (!filter.IsVegetarian()) continue;
+            //        Console.WriteLine(item.MealDescription.Description);
+            //        if (item.MealPrice != null)
+            //        {
+            //            Console.WriteLine(item.MealPrice.ToString());
+            //        }
+            //    }
+            //    Console.WriteLine();
+            //    Console.WriteLine();
+            //}
 
             //IWebPageParser parser = new WebPageParser();
             //var rozmaryny = new RozmarynyHandler(parser, "https://rozmaryny.cz");
@@ -73,7 +75,7 @@ namespace IAmHungry.ApplicationTest
 
             //    foreach (var item in restaurant.DailyMenu.Items)
             //    {
-            //        IMealsFilter filter = new MealsFilter(item.MealDescription);
+            //        IMealData filter = new MealData(item.MealDescription);
             //        if (filter.IsVegetarian())
             //        {
             //            Console.WriteLine(item.MealDescription.Description);
@@ -124,13 +126,13 @@ namespace IAmHungry.ApplicationTest
        }*/
 
             /* test Parseru (vyhledávání konkrétních položek pomocí xpath)
-            
+
             try
             {
                 var page = parser.LoadPage("https://www.olomouc.cz/poledni-menu/");
 
-                var menuItem1 = parser.GetSingleNodeInnerText(page, "//div[@id='restMenu30']//table/tr[1]/td[2]"); //první tr a druhý td, tedy popis jídla 
-                Console.WriteLine(menuItem1);   
+                var menuItem1 = parser.GetSingleNodeInnerText(page, "//div[@id='restMenu30']//table/tr[1]/td[2]"); //první tr a druhý td, tedy popis jídla
+                Console.WriteLine(menuItem1);
             }
             catch (Exception e)
             {
@@ -141,7 +143,7 @@ namespace IAmHungry.ApplicationTest
             {
                 var page = parser.LoadPage("https://www.olomouc.cz/poledni-menu/");
                 var restaurantIds = page.DocumentNode.SelectNodes("//div[contains(concat(' ', normalize-space(@id), ' '), 'restMenu')]");
-                foreach (var id in  restaurantIds) 
+                foreach (var id in  restaurantIds)
                 {
                     Console.WriteLine(id.Url);
                 }

@@ -15,7 +15,7 @@ namespace IAmHungry.Application
 
         public RozmarynyHandler(IWebPageParser parser, string url) 
         {
-            //pozor na to, že adresa restaurace je rozmaryny.cz, ale tady se to dělí ještě na /kontakt a /menu pro získání infa
+            //necessary to add /kontakt and /menu to get proper information
             webPageParser = parser;
             _rozmarynyUrl = url;
             _rozmarynyKontakt = $"{url}/kontakt";
@@ -37,7 +37,12 @@ namespace IAmHungry.Application
 
             foreach (var node in dailyMenuNode)
             {
-                dailyMenu.Items.AddRange(node.Select(line => new MenuItem(new Meal(line.InnerText))));
+                dailyMenu.Items.AddRange(
+                    node
+                        .Select(line => line.InnerText.Replace("\n", "").Replace("\t", ""))
+                        .Where(text => !isEmpty(text))
+                        .Select(text => new MenuItem(new Meal(text, true, new MealData(text).GetMeal().IsSoup )))
+                );
             }
 
             return dailyMenu;
@@ -59,14 +64,22 @@ namespace IAmHungry.Application
             var info = webPageParser.GetSingleNodeInnerText(webPage, "//div[@class='contactItem']//div[@class='headerTxt']").Split(", ");
             var restaurant = new Restaurant(_rozmarynyUrl, info[0], info[1])
             {
-                //zatím nastaveno jen pro aktuální dnešní datum
+                //set to find menu for today
                 DailyMenu = GetMenu(DateTime.Today)
+               
             };
             if (restaurant.DailyMenu.Items.Count == 0)
             {
-                restaurant.DailyMenu.Items.Add(new MenuItem(new Meal("Restaurace nedodala aktuální údaje.")));
+                restaurant.DailyMenu.Items.Add(new MenuItem(new Meal("Restaurace nedodala aktuální údaje.", false, false)));
             }
             return restaurant;
+        }
+
+        private bool isEmpty(string input)
+        {
+            string[] wrongChains = ["&nbsp;&nbsp;&nbsp;&nbsp;", " &nbsp;&nbsp;&nbsp;&nbsp;", "&nbsp;&nbsp;&nbsp;&nbsp; ", " &nbsp;&nbsp;&nbsp;&nbsp; ", "&nbsp;&nbsp;"
+            ];
+            return wrongChains.Contains(input);
         }
     }
 }
